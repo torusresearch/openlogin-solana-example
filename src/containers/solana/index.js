@@ -32,7 +32,7 @@ function Solana() {
       const privateKey = sdkInstance.privKey;
       const solanaPrivateKey = nacl.sign.keyPair.fromSeed(fromHexString(privateKey.padStart(64, 0))).secretKey;
       const account = new Account(solanaPrivateKey);
-      setPrivateKey(solanaPrivateKey);
+      setPrivateKey(bs58.encode(account.secretKey));
       const accountInfo = await getAccountInfo(solanaNetwork.url, account.publicKey);
       setUserAccount(account);
       setUserAccountInfo(accountInfo);
@@ -75,7 +75,7 @@ function Solana() {
             </div>
             <hr/>
             <span>Private key:</span>
-            <div style={{margin:20, maxWidth: 800, wordWrap: "break-word"}}>
+            <div style={{margin:20, maxWidth: 900, wordWrap: "break-word"}}>
                <span style={{margin: 20}}>{(solanaPrivateKey)}</span>
             </div>
           </div>
