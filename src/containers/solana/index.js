@@ -57,7 +57,7 @@ function Solana() {
     <div>
       <PageHeader
         className="site-page-header"
-        title="Openlogin solana boilerplate"
+        title="Openlogin x Solana"
         extra={[
           <Button key="1" type="primary" onClick={handleLogout}>
             Logout

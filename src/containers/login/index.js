@@ -17,7 +17,7 @@ function Login() {
   return (
     <div className="loginContainer">
       <div className="loginContainer">
-        <h1 style={{ textAlign: "center" }}>Openlogin solana boilerplate</h1>
+        <h1 style={{ textAlign: "center" }}>Openlogin x Solana</h1>
         <div onClick={handleLogin} className="btn">
           Login
         </div>
