@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import OpenLogin from "@toruslabs/openlogin";
 import { Account, Connection } from "@solana/web3.js";
 import nacl from "tweetnacl";
@@ -14,21 +14,30 @@ const solanaNetwork = networks.mainnet;
 
 
 function Solana() {
+  
   const [sdk, setSdk] = useState(undefined);
   const [account, setUserAccount] = useState(null);
   const [accountInfo, setUserAccountInfo] = useState(null);
   const [solanaPrivateKey, setPrivateKey] = useState(null)
   const history = useHistory();
   useEffect(() => {
+    
     async function initializeOpenlogin() {
-      const sdkInstance = new OpenLogin({ clientId: verifiers.google.clientId, iframeUrl: "http://beta.openlogin.com" });
+    
+      const sdkInstance = new OpenLogin({ clientId: verifiers.google.clientId, iframeUrl: "https://beta.openlogin.com" });
+
       await sdkInstance.init();
       if (!sdkInstance.privKey) {
         await sdkInstance.login({
           loginProvider: "google",
           redirectUrl: `${window.origin}/solana`,
+          originData: {
+            [window.location.origin]: verifiers.google.sig
+          }
         });
+        return
       }
+      window.openlogin = sdkInstance;
       const privateKey = sdkInstance.privKey;
       const solanaPrivateKey = nacl.sign.keyPair.fromSeed(fromHexString(privateKey.padStart(64, 0))).secretKey;
       const account = new Account(solanaPrivateKey);

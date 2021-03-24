@@ -8,7 +8,14 @@ import "./style.scss";
 
 function Login() {
   async function handleLogin() {
-    const sdkInstance = new OpenLogin({ clientId: verifiers.google.clientId, iframeUrl: "http://beta.openlogin.com" });
+  
+    const sdkInstance = new OpenLogin({ 
+      clientId: verifiers.google.clientId, 
+      iframeUrl: "https://beta.openlogin.com",
+      originData: {
+        [window.location.origin]: verifiers.google.sig
+      }
+     });
     await sdkInstance.login({
       loginProvider: "google",
       redirectUrl: `${window.origin}/solana`,
