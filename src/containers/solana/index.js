@@ -1,14 +1,22 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import OpenLogin from "@toruslabs/openlogin";
-import { Account, Connection } from "@solana/web3.js";
+import { Account, Connection, clusterApiUrl } from "@solana/web3.js";
 import nacl from "tweetnacl";
 import * as bs58 from "bs58";
 import { PageHeader, Button } from "antd";
 import { useHistory } from "react-router";
-import { verifiers } from "../../utils/config";
-import { networks, fromHexString } from "../../utils/solanaHelpers";
 import "./style.scss";
+
+const networks = {
+  mainnet: { url: "https://solana-api.projectserum.com", displayName: "Mainnet Beta" },
+  devnet: { url: clusterApiUrl("devnet"), displayName: "Devnet" },
+  testnet: { url: clusterApiUrl("testnet"), displayName: "Testnet" },
+};
+
+
+const fromHexString = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+
 
 const solanaNetwork = networks.mainnet;
 
@@ -21,42 +29,38 @@ function Solana() {
   const [solanaPrivateKey, setPrivateKey] = useState(null)
   const history = useHistory();
   useEffect(() => {
-    
     async function initializeOpenlogin() {
-    
       const sdkInstance = new OpenLogin({ 
-        clientId: verifiers.google.clientId, // your project id
+        clientId: "YOUR_PROJECT_ID", // your project id
         network: "testnet",
       });
 
       await sdkInstance.init();
       if (!sdkInstance.privKey) {
-        await sdkInstance.login({
-          loginProvider: "google",
-          redirectUrl: `${window.origin}/solana`,
-          originData: {
-            [window.location.origin]: verifiers.google.sig
-          }
-        });
+        history.push('/');
         return
       }
-      window.openlogin = sdkInstance;
       const privateKey = sdkInstance.privKey;
-      const solanaPrivateKey = nacl.sign.keyPair.fromSeed(fromHexString(privateKey.padStart(64, 0))).secretKey;
-      const account = new Account(solanaPrivateKey);
-      setPrivateKey(bs58.encode(account.secretKey));
-      const accountInfo = await getAccountInfo(solanaNetwork.url, account.publicKey);
-      setUserAccount(account);
-      setUserAccountInfo(accountInfo);
+      const solanaPrivateKey = getSolanaPrivateKey(privateKey);
+      await getAccountInfo(solanaNetwork.url,solanaPrivateKey);
+      
       setSdk(sdkInstance);
     }
     initializeOpenlogin();
-  }, []);
+  }, [history]);
 
+  const getSolanaPrivateKey = (openloginKey)=>{
+    const solanaPrivateKey = nacl.sign.keyPair.fromSeed(fromHexString(openloginKey.padStart(64, 0))).secretKey;
+    return solanaPrivateKey;
+  }
 
-  const getAccountInfo = async(connectionUrl, publicKey) => {
-    const connection = new Connection(connectionUrl, "recent");
-    const accountInfo = await connection.getAccountInfo(publicKey);
+  const getAccountInfo = async(connectionUrl, solanaPrivateKey) => {
+    const account = new Account(solanaPrivateKey);
+    const connection = new Connection(connectionUrl);
+    const accountInfo = await connection.getAccountInfo(account.publicKey);
+    setPrivateKey(bs58.encode(account.secretKey));
+    setUserAccount(account);
+    setUserAccountInfo(accountInfo);
     return accountInfo;
   }
 

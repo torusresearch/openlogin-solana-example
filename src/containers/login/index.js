@@ -1,19 +1,13 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
 import React from "react";
 import OpenLogin from "@toruslabs/openlogin";
-import { verifiers } from "../../utils/config";
 import "./style.scss";
 
 function Login() {
   async function handleLogin() {
-  
-    const sdkInstance = new OpenLogin({ 
-      clientId: verifiers.google.clientId,  // your project id
-      network: "testnet",
-      originData: {
-        [window.location.origin]: verifiers.google.sig
-      }
+
+    const sdkInstance = new OpenLogin({
+      clientId: "YOUR_PROJECT_ID",  // your project id
+      network: "testnet"
      });
     await sdkInstance.login({
       loginProvider: "google",
