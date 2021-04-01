@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useCallback } from "react";
-import { useLocation, useHistory } from "react-router";
+import React from "react";
 import OpenLogin from "@toruslabs/openlogin";
 import { verifiers } from "../../utils/config";
 import "./style.scss";
@@ -10,8 +9,8 @@ function Login() {
   async function handleLogin() {
   
     const sdkInstance = new OpenLogin({ 
-      clientId: verifiers.google.clientId, 
-      iframeUrl: "https://beta.openlogin.com",
+      clientId: verifiers.google.clientId,  // your project id
+      network: "testnet",
       originData: {
         [window.location.origin]: verifiers.google.sig
       }

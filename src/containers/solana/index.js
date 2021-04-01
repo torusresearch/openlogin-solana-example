@@ -24,7 +24,10 @@ function Solana() {
     
     async function initializeOpenlogin() {
     
-      const sdkInstance = new OpenLogin({ clientId: verifiers.google.clientId, iframeUrl: "https://beta.openlogin.com" });
+      const sdkInstance = new OpenLogin({ 
+        clientId: verifiers.google.clientId, // your project id
+        network: "testnet",
+      });
 
       await sdkInstance.init();
       if (!sdkInstance.privKey) {
