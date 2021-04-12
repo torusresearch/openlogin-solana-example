@@ -27,8 +27,11 @@ function Login() {
     setLoading(true);
     async function initializeOpenlogin() {
       const sdkInstance = new OpenLogin({
-        clientId: "YOUR_PROJECT_ID", // your project id
+        clientId: process.env.REACT_APP_CLIENT_ID, // your project id
         network: "testnet",
+        originData: {
+          "https://solana-openlogin.herokuapp.com": process.env.REACT_APP_SIG
+        }
       });
       await sdkInstance.init();
       if (sdkInstance.privKey) {
