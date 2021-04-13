@@ -12,9 +12,12 @@ function AccountInfo({
           className="site-page-header"
           title="Openlogin x Solana"
           extra={[
-              <Button key="1" type="primary" onClick={handleLogout}>
+              <Button key="1" type="primary" onClick={()=>handleLogout(false)}>
               Logout
               </Button>,
+             <Button key="1" type="primary" onClick={()=>handleLogout(true)}>
+               Sleep (Fast Login enabled)
+            </Button>,
           ]}
       />
       <div className="container">

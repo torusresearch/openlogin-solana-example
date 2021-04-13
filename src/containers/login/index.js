@@ -76,11 +76,15 @@ function Login() {
     }
   }
 
-  const handleLogout = async () => {
+  const handleLogout = async (fastLogin=false) => {
     setLoading(true)
-    await openlogin.logout();
+    await openlogin.logout({
+       fastLogin
+    });
     setLoading(false)
   };
+
+  
   return (
     <>
     {
