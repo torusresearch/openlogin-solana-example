@@ -29,11 +29,9 @@ function Login() {
       const sdkInstance = new OpenLogin({
         clientId: process.env.REACT_APP_CLIENT_ID, // your project id
         network: "testnet",
-        originData: {
-          "https://solana-openlogin.herokuapp.com": process.env.REACT_APP_SIG
-        }
       });
       await sdkInstance.init();
+      console.log("priv key", sdkInstance.privKey)
       if (sdkInstance.privKey) {
         const privateKey = sdkInstance.privKey;
         const secretKey = getSolanaPrivateKey(privateKey);
@@ -67,8 +65,11 @@ function Login() {
         loginProvider: "google",
         redirectUrl: `${window.origin}`,
       });
-      const solanaPrivateKey = getSolanaPrivateKey(privKey);
-      await getAccountInfo(solanaNetwork.url,solanaPrivateKey);
+      if(privKey && typeof privKey === "string") {
+        const solanaPrivateKey = getSolanaPrivateKey(privKey);
+        await getAccountInfo(solanaNetwork.url,solanaPrivateKey);
+      } 
+    
       setLoading(false)
     } catch (error) {
       console.log("error", error);
