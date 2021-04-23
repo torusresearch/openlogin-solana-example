@@ -26,6 +26,7 @@ function Login() {
   useEffect(() => {
     setLoading(true);
     async function initializeOpenlogin() {
+      console.log("client id", process.env.REACT_APP_CLIENT_ID);
       const sdkInstance = new OpenLogin({
         clientId: process.env.REACT_APP_CLIENT_ID, // your project id
         network: "testnet",
