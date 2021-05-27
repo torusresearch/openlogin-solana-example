@@ -64,9 +64,8 @@ function Login() {
     setLoading(true)
     try {
       const privKey = await openlogin.login({
-        loginProvider: "google",
         redirectUrl: `${window.origin}`,
-        relogin: false
+        relogin: true
       });
       if(privKey && typeof privKey === "string") {
         const solanaPrivateKey = getSolanaPrivateKey(privKey);
