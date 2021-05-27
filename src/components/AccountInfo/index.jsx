@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageHeader, Button } from "antd";
 import "./style.scss";
 
 function AccountInfo({
   handleLogout, privKey, walletInfo,account
 }) {
+ 
  const [privateKeyHidden, setPkeyVisiblity] = useState(false);
+//  useEffect(()=>{
+//   console
+//  },[walletInfo])
  return (
   <div>
       <PageHeader

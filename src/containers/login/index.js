@@ -22,6 +22,7 @@ function Login() {
   const [account, setUserAccount] = useState(null);
   const [walletInfo, setUserAccountInfo] = useState(null);
   const [solanaPrivateKey, setPrivateKey] = useState(null)
+  const [torusNetwork, setTorusNetwork] = useState('mainnet')
 
   useEffect(() => {
     setLoading(true);
@@ -29,7 +30,7 @@ function Login() {
       console.log("client id", process.env.REACT_APP_CLIENT_ID);
       const sdkInstance = new OpenLogin({
         clientId: process.env.REACT_APP_CLIENT_ID, // your project id
-        network: "testnet",
+        network: torusNetwork,
       });
       await sdkInstance.init();
       console.log("priv key", sdkInstance.privKey)
@@ -63,9 +64,9 @@ function Login() {
     setLoading(true)
     try {
       const privKey = await openlogin.login({
-        // loginProvider: "google",
+        loginProvider: "google",
         redirectUrl: `${window.origin}`,
-        relogin: true
+        relogin: false
       });
       if(privKey && typeof privKey === "string") {
         const solanaPrivateKey = getSolanaPrivateKey(privKey);
@@ -87,7 +88,10 @@ function Login() {
     setLoading(false)
   };
 
-  
+  const onChangeTorusNetwork = (e)=>{
+    console.log("vla", e.target.value)
+    setTorusNetwork(e.target.value)
+  }
   return (
     <>
     {
@@ -112,6 +116,10 @@ function Login() {
                 <div onClick={handleLogin} className="btn">
                   Login
                 </div>
+                <select onChange={onChangeTorusNetwork} style={{ margin: 20 }}>
+                  <option id="mainnet">mainnet</option>
+                  <option id="testnet">testnet</option>
+                </select>
             </div>
         }
 
