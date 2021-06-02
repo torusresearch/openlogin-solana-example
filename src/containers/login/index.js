@@ -4,6 +4,7 @@ import AccountInfo  from "../../components/AccountInfo";
 import { Account, Connection, clusterApiUrl } from "@solana/web3.js";
 import { getED25519Key } from "@toruslabs/openlogin-ed25519";
 import * as bs58 from "bs58";
+import { useHistory } from "react-router-dom"
 
 import "./style.scss";
 
@@ -17,24 +18,29 @@ const solanaNetwork = networks.testnet;
 const connection = new Connection(solanaNetwork.url);
 
 function Login() {
+
   const [loading, setLoading] = useState(false);
   const [openlogin, setSdk] = useState(undefined);
   const [account, setUserAccount] = useState(null);
   const [walletInfo, setUserAccountInfo] = useState(null);
   const [solanaPrivateKey, setPrivateKey] = useState(null)
-  const [torusNetwork, setTorusNetwork] = useState('mainnet')
-
+  const [torusNetwork, setTorusNetwork] = useState(null)
+  useEffect(() => {
+    const defaultNetwork = localStorage.getItem('network') || 'testnet'
+    setTorusNetwork(defaultNetwork)
+  },[])
   useEffect(() => {
     setLoading(true);
     async function initializeOpenlogin() {
-      console.log("client id", process.env.REACT_APP_CLIENT_ID);
       const sdkInstance = new OpenLogin({
         clientId: process.env.REACT_APP_CLIENT_ID, // your project id
-        network: torusNetwork,
+        network: localStorage.getItem('network') || 'testnet',
       });
       await sdkInstance.init();
-      console.log("priv key", sdkInstance.privKey)
       if (sdkInstance.privKey) {
+        const userInfo = await sdkInstance.getUserInfo()
+        console.log('user info', userInfo)
+
         const privateKey = sdkInstance.privKey;
         const secretKey = getSolanaPrivateKey(privateKey);
         await getAccountInfo(secretKey);
@@ -43,7 +49,7 @@ function Login() {
       setLoading(false);
     }
     initializeOpenlogin();
-  }, []);
+  }, [torusNetwork]);
 
 
   const getSolanaPrivateKey = (openloginKey)=>{
@@ -68,6 +74,8 @@ function Login() {
         relogin: true
       });
       if(privKey && typeof privKey === "string") {
+        const userInfo = await openlogin.getUserInfo()
+        console.log('user info', userInfo)
         const solanaPrivateKey = getSolanaPrivateKey(privKey);
         await getAccountInfo(solanaNetwork.url,solanaPrivateKey);
       } 
@@ -87,9 +95,12 @@ function Login() {
     setLoading(false)
   };
 
-  const onChangeTorusNetwork = (e)=>{
+  const onChangeTorusNetwork = async (e)=>{
     console.log("vla", e.target.value)
+    localStorage.setItem('network',e.target.value)
     setTorusNetwork(e.target.value)
+    await openlogin._cleanup()
+
   }
   return (
     <>
@@ -115,7 +126,7 @@ function Login() {
                 <div onClick={handleLogin} className="btn">
                   Login
                 </div>
-                <select onChange={onChangeTorusNetwork} style={{ margin: 20 }}>
+                <select value={torusNetwork} onChange={onChangeTorusNetwork} style={{ margin: 20 }}>
                   <option id="mainnet">mainnet</option>
                   <option id="testnet">testnet</option>
                 </select>
