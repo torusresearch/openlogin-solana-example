@@ -9,12 +9,12 @@ import { useHistory } from "react-router-dom"
 import "./style.scss";
 
 const networks = {
-  mainnet: { url: "https://solana-api.projectserum.com", displayName: "Mainnet Beta" },
-  devnet: { url: clusterApiUrl("devnet"), displayName: "Devnet" },
-  testnet: { url: clusterApiUrl("testnet"), displayName: "Testnet" },
+  mainnet: { url: "https://api.mainnet-beta.solana.com", displayName: "Mainnet Beta" },
+  devnet: { url: "https://api.devnet.solana.com", displayName: "Devnet" },
+  testnet: { url: "https://api.testnet.solana.com", displayName: "Testnet" },
 };
 
-const solanaNetwork = networks.testnet;
+const solanaNetwork = networks.mainnet;
 const connection = new Connection(solanaNetwork.url);
 
 function Login() {
