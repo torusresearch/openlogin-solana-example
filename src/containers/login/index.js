@@ -14,7 +14,7 @@ const networks = {
   testnet: { url: "https://api.testnet.solana.com", displayName: "Testnet" },
 };
 
-const solanaNetwork = networks.mainnet;
+const solanaNetwork = networks.testnet;
 const connection = new Connection(solanaNetwork.url);
 
 function Login() {
